@@ -187,7 +187,6 @@ void GeometryClass::CreateObject(ID3D11Device *dev, ID3D11DeviceContext *devcon,
     ObjectClass *obj = new ObjectClass();
     obj->numIndices = indices.size();
     
-
     // create the vertex buffer
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
@@ -225,11 +224,11 @@ void GeometryClass::CreateObject(ID3D11Device *dev, ID3D11DeviceContext *devcon,
 }
 
 
-void GeometryClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain)
+void GeometryClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer)
 {
     // Render it all
     for(int i = 0; i < objects.size(); i++ )
     {
-        objects[i]->Render(dev, devcon, backbuffer, swapchain);
+        objects[i]->Render(dev, devcon, backbuffer);
     }
 }

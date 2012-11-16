@@ -44,5 +44,3 @@ void ShaderClass::InitShader(string vsname, string psname, struct SHADER shader,
     dev->CreateInputLayout(ied, 2, bVS->GetBufferPointer(), bVS->GetBufferSize(), &pLayout);
     devcon->IASetInputLayout(pLayout);
 }
-
-

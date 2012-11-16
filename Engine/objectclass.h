@@ -16,7 +16,7 @@ public:
 	ObjectClass();
 	~ObjectClass();
 
-	void Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain);
+	void Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer);
 
 	D3DXMATRIX *transMat;
 	unsigned int numIndices;

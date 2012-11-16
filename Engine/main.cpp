@@ -69,13 +69,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 	triangleObj = new ObjectClass();
     SetTriangle(triangleObj, dev, devcon);
+
     geometry = new GeometryClass();
     VERTEX sphere_center;
 	sphere_center.position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	sphere_center.color = D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f);
 	sphere_center.normal = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-	geometry->LoadObject(dev, devcon, "cow.obj");
-    geometry->CreateSphere(dev, devcon, sphere_center, 1.0f, 30, 30);
+	
+	geometry->LoadObject(dev, devcon, "objects/cow.obj");
+	geometry->LoadObject(dev, devcon, "objects/sandal.obj");
+	//geometry->LoadObject(dev, devcon, "objects/cow.obj");
+    //geometry->CreateSphere(dev, devcon, sphere_center, 1.0f, 30, 30);
 	
 
     // enter the main loop:
@@ -123,9 +127,17 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		//D3DXMatrixRotationY(&matFinal, Time);
 		// set the new values for the constant buffer
 		devcon->UpdateSubresource(pCBuffer, 0, 0, &matFinal, 0, 0);				
-        geometry->Render(dev, devcon, backbuffer, swapchain);
-        //triangleObj->Render(dev, devcon, backbuffer, swapchain);
-						
+        devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f));
+		geometry->Render(dev, devcon, backbuffer);
+        //triangleObj->Render(dev, devcon, backbuffer, swapchain);	
+
+
+	
+	// switch the back buffer and the front buffer
+    swapchain->Present(0, 0);
+
+
+	
 	}
 
     // clean up DirectX and COM
@@ -211,7 +223,6 @@ void InitD3D(HWND hWnd)
 
     InitPipeline();
 }
-
 
 
 
