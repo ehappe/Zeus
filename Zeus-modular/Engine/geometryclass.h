@@ -39,9 +39,10 @@ public:
 	void Initialize();
     void LoadObject(ID3D11Device *, ID3D11DeviceContext *, string);
     void CreateSphere(ID3D11Device *, ID3D11DeviceContext *, VERTEX, float, int, int);
-	void SetMatrix(D3DXMATRIX mat, int objNum);
-    void Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain, ID3D11Buffer *pCBuffer);
-	
+	void SetMatrix(D3DXMATRIX finalMat, D3DXMATRIX worldMat, int objNum);
+    void Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain, ID3D11Buffer *pCBuffer, ID3D11Buffer *pLBuffer);
+	void SetLight(LIGHT *light, int objNum);
+
 private:
     vector<ObjectClass*> objects;
     void CreateObject(ID3D11Device *, ID3D11DeviceContext *, vector<VERTEX>, vector<int>);

@@ -5,3 +5,5 @@
 #include "geometryclass.h"
 #include "objectclass.h"
 #include "shaderclass.h"
+#include "cameraclass.h"
+

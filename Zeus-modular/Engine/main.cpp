@@ -10,10 +10,28 @@ ID3D11Device *dev;                     // the pointer to our Direct3D device int
 ID3D11DeviceContext *devcon;           // the pointer to our Direct3D device context
 ID3D11RenderTargetView *backbuffer;    // the pointer to our back buffer
 ID3D11Buffer *pCBuffer;                // the pointer to the constant buffer
-ID3D11Buffer *pCameraBuffer;		   // the pointer to the camera constant buffer
+ID3D11Buffer *pCameraBuffer;		   // the pointer to the camera buffer
+ID3D11Buffer *pLightBuffer;				// the pointer to the light constant buffer
 ObjectClass	*triangleObj;
 GeometryClass *geometry;
 ShaderClass *shaderclass;
+CameraClass *cameraclass;
+LIGHT *light;
+
+struct CBUFFER
+{
+	//matrices
+	D3DXMATRIX finalMat;
+	D3DXMATRIX worldMat;
+	//lighting info
+    D3DXVECTOR4 ambientColor;
+	D3DXVECTOR4 diffuseColor;
+	D3DXVECTOR3 LightDirection;
+	float specularPower;
+	D3DXVECTOR4 specularColor;
+	//camera info
+	D3DXVECTOR3 cameraPos;
+};
 
 // function prototypes
 void InitD3D(HWND hWnd);    // sets up and initializes Direct3D
@@ -77,10 +95,20 @@ int WINAPI WinMain(HINSTANCE hInstance,
 	sphere_center.normal = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	geometry->LoadObject(dev, devcon, "cow.obj");
     geometry->CreateSphere(dev, devcon, sphere_center, 1.0f, 30, 30);
+
+	light = new LIGHT();
+	light->ambientColor = D3DXVECTOR4(0.0f, 0.0f, 1.0f, 1.0f);
+	light->diffuseColor = D3DXVECTOR4(0.0f, 1.0f, 1.0f, 1.0f);
+	light->specularColor = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
+	light->specularPower = 1.0f;
+	light->LightDirection = D3DXVECTOR3(0.0f, 1.0f, 1.0f);
+
+	cameraclass = new CameraClass();
+	cameraclass->SetCamera( new D3DXVECTOR3(0.0f, 1.5f, 5.5f) );
 	
-
+	geometry->SetLight(light, 0);
+	geometry->SetLight(light, 1);
     // enter the main loop:
-
     MSG msg;
 
     while(TRUE)
@@ -98,6 +126,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 		static float Time = 0.0f; Time += 0.001f;
 
+		
+		cameraclass->SetBuffer(pCameraBuffer, devcon);	
 		// create a rotation matrix
 		D3DXMatrixRotationY(&matRotate, Time);
 
@@ -120,7 +150,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
 		// create the final transform
 		matFinal =  matRotate * matTrans *  matView * matProjection;
 
-		geometry->SetMatrix(matFinal, 0);
+		geometry->SetMatrix(matFinal, matRotate * matTrans, 0);
 
 		// set matrix for second object
 
@@ -130,9 +160,11 @@ int WINAPI WinMain(HINSTANCE hInstance,
 
 		matFinal = matRotate * matTrans * matView * matProjection;
 
-		geometry->SetMatrix(matFinal, 1);
+		geometry->SetMatrix(matFinal, matRotate * matTrans, 1);
 		
-        geometry->Render(dev, devcon, backbuffer, swapchain, pCBuffer);
+
+
+        geometry->Render(dev, devcon, backbuffer, swapchain, pCBuffer, pLightBuffer);
 						
 	}
 
@@ -241,14 +273,17 @@ void CleanD3D(ObjectClass *obj)
 // this function loads and prepares the shaders
 void InitPipeline()
 {   
+
+	// creates the constant buffer for matrices
     D3D11_BUFFER_DESC bd;
     ZeroMemory(&bd, sizeof(bd));
 
     bd.Usage = D3D11_USAGE_DEFAULT;
-    bd.ByteWidth = 64;
+    bd.ByteWidth = sizeof(CBUFFER);
     bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
 
     dev->CreateBuffer(&bd, NULL, &pCBuffer);
     devcon->VSSetConstantBuffers(0, 1, &pCBuffer);
-    
+
 }

@@ -8,8 +8,6 @@ ObjectClass::ObjectClass()
 
 void ObjectClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain)
 {
-
-
         // select which vertex buffer to display
         UINT stride = sizeof(VERTEX);
         UINT offset = 0;
@@ -21,9 +19,6 @@ void ObjectClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11R
 		// select which primtive type we are using
         devcon->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
         // draw the vertex buffer to the back buffer
         devcon->DrawIndexed(numIndices, 0, 0);
-
-
 }

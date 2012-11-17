@@ -186,7 +186,8 @@ void GeometryClass::CreateObject(ID3D11Device *dev, ID3D11DeviceContext *devcon,
 {
     ObjectClass *obj = new ObjectClass();
     obj->numIndices = indices.size();
-    
+	obj->matrices = new MATRICES();
+	obj->light = new LIGHT();
 
     // create the vertex buffer
     D3D11_BUFFER_DESC bd;
@@ -224,23 +225,35 @@ void GeometryClass::CreateObject(ID3D11Device *dev, ID3D11DeviceContext *devcon,
     return;
 }
 
-void GeometryClass::SetMatrix(D3DXMATRIX mat, int objNum)
+void GeometryClass::SetMatrix(D3DXMATRIX fMat, D3DXMATRIX wMat, int objNum)
 {
-	objects[objNum]->transMat = mat;
+	objects[objNum]->matrices->finalMat = fMat;
+	objects[objNum]->matrices->worldMat = wMat;
 }
 
-void GeometryClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain, ID3D11Buffer *pCBuffer)
+void GeometryClass::SetLight(LIGHT *light, int objNum)
+{
+	objects[objNum]->light->ambientColor = light->ambientColor;
+	objects[objNum]->light->diffuseColor = light->diffuseColor;
+	objects[objNum]->light->specularColor = light->specularColor;
+	objects[objNum]->light->LightDirection = light->LightDirection;
+	objects[objNum]->light->specularPower = light->specularPower;
+}
+
+void GeometryClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D11RenderTargetView *backbuffer, IDXGISwapChain *swapchain,
+						 ID3D11Buffer *pCBuffer, ID3D11Buffer *pLBuffer)
 {
 
     // clear the back buffer to a deep blue
-    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 0.2f, 0.4f, 1.0f));
+    devcon->ClearRenderTargetView(backbuffer, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
 
     // Draw it all
     for(int i = 0; i < objects.size(); i++ )
     {
 
-		// update constant buffer
-		devcon->UpdateSubresource(pCBuffer, 0, 0, objects[i]->transMat, 0, 0);	
+		// update constant buffer 
+		devcon->VSSetConstantBuffers(0,0, &pCBuffer);	
+		devcon->PSSetConstantBuffers(0,0, &pLBuffer);
 
         objects[i]->Render(dev, devcon, backbuffer, swapchain);
     }
@@ -248,3 +261,4 @@ void GeometryClass::Render(ID3D11Device *dev, ID3D11DeviceContext *devcon, ID3D1
     // switch the back buffer and the front buffer
     swapchain->Present(0, 0);
 }
+
