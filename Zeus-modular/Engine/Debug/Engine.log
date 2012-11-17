@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 11/16/2012 8:25:57 PM.
      1>Project "C:\Users\happee\ZeusDev\Zeus\Zeus-modular\Engine\Engine.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
@@ -28,3 +29,14 @@
 Build succeeded.
 
 Time Elapsed 00:00:07.47
+=======
+﻿Build started 11/17/2012 5:37:32 AM.
+     1>Project "C:\Users\Chris\Documents\Zeus\Zeus-modular\Engine\Engine.vcxproj" on node 2 (clean target(s)).
+     1>_PrepareForClean:
+         Deleting file "Debug\Engine.lastbuildstate".
+     1>Done Building Project "C:\Users\Chris\Documents\Zeus\Zeus-modular\Engine\Engine.vcxproj" (clean target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.02
+>>>>>>> 5af28f34c66cacdba96b0a4f9ffd60f193c0523d
